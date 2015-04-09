@@ -1,1 +1,26 @@
-<ul ng-repeat="yak in yaks| orderBy:'-gmt'"> <li> <b>{{yak.gmt | date:'mediumTime'}}</b> {{yak.message}} </li> <!-- <li><pre>{{yak | json }}</pre></li> --> </ul>
+<style>.yaks {
+	background-color: white;
+	color: #637370;
+	padding: 15px;
+/*	font-size: 13px;
+	font-weight: 100;
+	font-family: "AvenirLTStd-Light";
+*/}
+
+.yak {
+	margin-bottom: 5px;
+	padding: 0px 5px 0px 5px;
+}
+.yak > p.time {
+	text-align: left;
+	color: #0dd5b2;
+	margin-top: 25px;
+	margin-bottom: 0px;
+	line-height: 1;
+}
+
+.yak > p.time > span[class^=glyphicon] {
+	padding-right: 8px;
+}
+
+.yak > hr { margin-top: 0px; margin-bottom: 0px; }</style> <div class="yaks"> <ul ng-repeat="yak in yaks| orderBy:'-gmt'" class="list-unstyled"> <li> <div class="yak" id="{{yak.message_id}}"> <p class="text"> <span class="message">"{{yak.message}}"</span> <span class="handle" ng-show="yak.handle">—{{yak.handle}}</span> </p> <p class="time"><span class="glyphicon glyphicon-time"></span><span am-time-ago="yak.gmt"></span></p> </div> <hr> </li> </ul> </div>
