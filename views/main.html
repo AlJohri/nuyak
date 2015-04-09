@@ -1,1 +1,1 @@
-<ul ng-repeat="yak in yaks| orderBy:'-gmt'"> <li>{{yak.gmt | date:'mediumTime'}} | {{yak.message}}</li> <!-- <li><pre>{{yak | json }}</pre></li> --> </ul>
+<ul ng-repeat="yak in yaks| orderBy:'-gmt'"> <li> <b>{{yak.gmt | date:'mediumTime'}}</b> {{yak.message}} </li> <!-- <li><pre>{{yak | json }}</pre></li> --> </ul>
