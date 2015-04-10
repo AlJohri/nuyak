@@ -9,7 +9,7 @@
  */
 angular.module('nuyakApp')
   .controller('MainCtrl', function ($scope, Ref, $firebaseArray) {
-    $scope.yaks = $firebaseArray(Ref.child('yaks')); // .limitToLast(10)
+    $scope.yaks = $firebaseArray(Ref.child('yaks').limitToLast(1000));
     $scope.yaks.$loaded().catch(alert);
 
     function alert(msg) {
