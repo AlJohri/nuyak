@@ -17,7 +17,8 @@ def yak_to_dict(yak):
     yak_dict['client']['location'] = yak_dict['client']['location'].__dict__ if type(yak_dict['client']['location']) != dict else yak_dict['client']['location']
     return yak_dict
 
-yakker = pyak.Yakker(user_id='FFD35754D9024E83425053CB67B7C9D3')
+# user_id='FFD35754D9024E83425053CB67B7C9D3'
+yakker = pyak.Yakker()
 print "New yakker registered with ID: %s" % yakker.id
 locations = {
     "tech": pyak.Location(42.057796,-87.676634)
