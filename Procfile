@@ -1,1 +1,1 @@
-clock: python python/simple.py
+clock: python backend/simple.py
