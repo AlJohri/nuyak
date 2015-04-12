@@ -1,3 +1,4 @@
+# https://github.com/soren121/yodel/blob/master/Yodel/js/yak_api.js
 import base64
 import hmac
 import json
@@ -215,7 +216,7 @@ class Yakker:
         return hash, salt
 
     def post_sign_request(self, page, params):
-        key = "35FD04E8-B7B1-45C4-9886-94A75F4A2BB4"
+        key = "EF64523D-2BD1-FA21-F18F-5BC654DFC41B"
 
         #The salt is just the current time in seconds since epoch
         salt = str(int(time.time()))
@@ -247,10 +248,8 @@ class Yakker:
             "Accept-Encoding": "gzip",
         }
 
-        fields = ["lat", "long", "userID", "version", "salt", "hash"]
-        params = OrderedDict([(field, params[field]) for field in fields])
-
-        # params = OrderedDict([(k,v) for k,v in params.iteritems() if k in fields])
+        fields = ["lat", "long", "messageID", "userID", "version", "salt", "hash"]
+        params = OrderedDict([(field, params[field]) for field in fields if field in params])
 
         response = requests.get(url, params=params, headers=headers, verify=False)
         if (self.HTTP_debugging):
