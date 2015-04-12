@@ -1,3 +1,8 @@
+from firebase import firebase
+firebase = firebase.FirebaseApplication('https://aljohri-nuyak.firebaseio.com', None)
+yaks = firebase.get("/yaks", None)
+texts = [yak['message'] for message_id, yak in yaks.iteritems()]
+
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,19 +10,13 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 
-from firebase import firebase
-firebase = firebase.FirebaseApplication('https://aljohri-nuyak.firebaseio.com', None)
-
-yaks = firebase.get("/yaks", None)
-text = [yak['message'] for message_id, yak in yaks.iteritems()]
-
 N_CLUSTERS = 3
 k_means = KMeans(n_clusters=N_CLUSTERS, init='k-means++', max_iter=100, n_init=1, verbose=True)
 # vectorizer = TfidfVectorizer(tokenizer=LemmaTokenizer(), max_df=0.5, min_df=0.1)
 vectorizer = TfidfVectorizer(stop_words='english') # max_df=0.1, min_df=0.1
 lsa = TruncatedSVD(2)
 
-vectors = vectorizer.fit_transform(text)
+vectors = vectorizer.fit_transform(texts)
 X = lsa.fit_transform(vectors)
 
 km = k_means.fit(X)
