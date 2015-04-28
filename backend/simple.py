@@ -18,6 +18,7 @@ def yak_to_dict(yak):
     return yak_dict
 
 # user_id='FFD35754D9024E83425053CB67B7C9D3'
+# user_id='E76D6FF1E04E83C414E7771EF3CBBBCD'
 yakker = pyak.Yakker()
 print "New yakker registered with ID: %s" % yakker.id
 locations = {

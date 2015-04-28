@@ -154,12 +154,14 @@ class Yak:
 
 class Yakker:
     base_url = "https://us-central-api.yikyakapi.net/api/"
-    user_agent = "Dalvik/1.6.0 (Linux; U; Android 4.2.2; GT-P5200 Build/JDQ39E)"
+    # user_agent = "Dalvik/1.6.0 (Linux; U; Android 4.2.2; GT-P5200 Build/JDQ39E)"
+    # user_agent = "Dalvik/1.6.0 (Linux; U; Android 4.4; SM-G900T Build/JDQ39) 2.6.1"
+    user_agent = "Dalvik/1.6.0 (Linux; U; Android 4.2.2; GT-P5200 Build/JDQ39E) 2.6.1"
     HTTP_debugging = False;
 
     def __init__(self, user_id=None, location=None, force_register=False):
         if location is None:
-            location = Location('0', '0')
+            location = Location('0.0', '0.0')
         self.update_location(location)
 
         if user_id is None:
@@ -189,7 +191,11 @@ class Yakker:
         return result
 
     def sign_request(self, page, params):
-        key = "35FD04E8-B7B1-45C4-9886-94A75F4A2BB4"
+        key = "EF64523D2BD1FA21F18F5BC654DFC41B"
+        # key = "EF64523D-2BD1-FA21-F18F-5BC654DFC41B"
+        # key = "35FD04E8-B7B1-45C4-9886-94A75F4A2BB4"
+        # key = "63E791E9-4696-2E20-1681-A2268B7B1032"
+        # key = "EF64523D-2BD1-FA21-F18F-5BC654DFC41B"
 
         #The salt is just the current time in seconds since epoch
         salt = str(int(time.time()))
@@ -216,7 +222,8 @@ class Yakker:
         return hash, salt
 
     def post_sign_request(self, page, params):
-        key = "EF64523D-2BD1-FA21-F18F-5BC654DFC41B"
+        # key = "EF64523D-2BD1-FA21-F18F-5BC654DFC41B"
+        key = "EF64523D2BD1FA21F18F5BC654DFC41B"
 
         #The salt is just the current time in seconds since epoch
         salt = str(int(time.time()))
@@ -237,7 +244,13 @@ class Yakker:
     def get(self, page, params):
         url = self.base_url + page
 
-        params['version'] = '2.1.001'
+        params['version'] = "2.6.1" #'2.1.001' # 2.3.3.1
+
+        if params['lat'] or params['long']:
+            params['accuracy'] = "10000.0"
+            params['userLat'] = params['lat']
+            params['userLong'] = params['long']
+        params['bc'] = 0
 
         hash, salt = self.sign_request(page, params)
         params['hash'] = hash
@@ -248,10 +261,9 @@ class Yakker:
             "Accept-Encoding": "gzip",
         }
 
-        fields = ["lat", "long", "messageID", "userID", "version", "salt", "hash"]
+        fields = ["accuracy", "bc", "deviceID", "lat", "long", "token", "messageID", "userID", "userLat", "userLong", "version", "salt", "hash"]
         params = OrderedDict([(field, params[field]) for field in fields if field in params])
-
-        response = requests.get(url, params=params, headers=headers, verify=False)
+        response = requests.get(url, params=params.items(), headers=headers, verify=False)
         if (self.HTTP_debugging):
             print vars(response)
         return response
