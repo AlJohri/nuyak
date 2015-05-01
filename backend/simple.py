@@ -1,6 +1,8 @@
 import time
 import pyak
 import copy
+import logging
+logging.basicConfig()
 
 import requests
 requests.packages.urllib3.disable_warnings()
@@ -27,6 +29,7 @@ locations = {
 
 @sched.scheduled_job('interval', seconds=10)
 def timed_job():
+    print "trying to get yaks.."
     yakker.update_location(locations['tech'])
     yaks = yakker.get_yaks()
     print "Found %d yaks" % len(yaks)

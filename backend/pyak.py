@@ -16,11 +16,9 @@ from hashlib import md5
 
 from dateutil import tz
 
-def parse_time(timestr):
-    format = "%Y-%m-%d %H:%M:%S"
-    return datetime.datetime.fromtimestamp(
-        time.mktime(time.strptime(timestr, format))
-    ).strftime('%Y-%m-%d %H:%M:%S')
+from_zone_est = tz.gettz('America/New York')
+from_zone_gmt = tz.gettz('GMT')
+to_zone = tz.gettz('America/Chicago')
 
 class Location:
     def __init__(self, latitude, longitude, delta=None):
@@ -49,7 +47,7 @@ class Comment:
         self.message_id = message_id
         self.comment_id = raw["commentID"]
         self.comment = raw["comment"]
-        self.time = parse_time(raw["time"])
+        self.time = raw["time"]
         self.likes = int(raw["numberOfLikes"])
         self.poster_id = raw["posterID"]
         self.liked = int(raw["liked"])
@@ -86,9 +84,6 @@ class Comment:
             my_action = "v"
         print ("\t\t%s(%s) %s \n\n\t\tPosted  %s" % (my_action, self.likes, self.comment, self.time))
 
-from_zone = tz.gettz('GMT')
-to_zone = tz.gettz('America/Chicago')
-
 class Yak:
     def __init__(self, raw, client):
         self.client = client
@@ -98,15 +93,16 @@ class Yak:
         self.delivery_id = raw["deliveryID"]
         self.longitude = raw["longitude"]
         self.comments = int(raw["comments"])
-        self.time = parse_time(raw["time"])
+        self.time = datetime.datetime.strptime(raw["time"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=from_zone_est).astimezone(to_zone) #.strftime('%Y-%m-%d %I:%M:%S %p')
         self.latitude = raw["latitude"]
         self.likes = int(raw["numberOfLikes"])
         self.message = raw["message"]
         self.type = raw["type"]
         self.liked = int(raw["liked"])
         self.reyaked = raw["reyaked"]
-        # import pdb; pdb.set_trace()
-        self.gmt = datetime.datetime.utcfromtimestamp(raw['gmt']).replace(tzinfo=from_zone).astimezone(to_zone)
+        self.gmt = self.time
+        # self.gmt = datetime.datetime.utcfromtimestamp(raw['gmt']).replace(tzinfo=from_zone_gmt).astimezone(to_zone) #.strftime('%Y-%m-%d %I:%M:%S %p')
+        # print raw['gmt'], self.gmt, raw['time'], self.time
 
         #Yaks don't always have a handle
         try:
