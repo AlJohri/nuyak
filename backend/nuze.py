@@ -39,20 +39,21 @@ locations = {
     "tech": pyak.Location(42.057796,-87.676634)
 }
 
-@sched.scheduled_job('interval', seconds=10)
+@sched.scheduled_job('interval', seconds=30)
 def timed_job():
     # firebase.delete("/yaks", None)
     print "trying to get yaks.."
     yakker.update_location(locations['tech'])
     yaks = yakker.get_area_tops()
     print "Found %d yaks" % len(yaks)
-    for yak in yaks:
+    for i, yak in enumerate(yaks):
         # import pdb; pdb.set_trace()
         yak.message_id = yak.message_id.replace("R/", "")
-        if firebase.get('/yaks', yak.message_id): break
+        existing_yak = firebase.get('/yaks', yak.message_id)
+        if existing_yak and existing_yak['likes'] == yak.likes: break
         result = firebase.put(url='/yaks', name=yak.message_id, data=yak_to_dict(yak), headers={'print': 'pretty'})
-        print yak.time.strftime("%m/%e/%y %I:%M:%S"), yak.message_id, yak.likes, yak.message
+        print i, yak.time.strftime("%m/%e/%y %I:%M:%S"), yak.message_id, yak.likes, yak.message
     print "Sleep 10 seconds..."
 
+timed_job()
 sched.start()
-# timed_job()
