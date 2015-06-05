@@ -6,7 +6,6 @@ from sklearn.datasets.base import Bunch
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import cross_val_score
@@ -27,11 +26,11 @@ with open("yaks.csv") as f:
 
 def known(x): return True if x != "?" and x != None and x != "" else False
 
-def process(group, predict_unlabled_data=False):
+def process(group, predict_unlabled_data=False, classifier=BernoulliNB):
 
-    print group[0].upper() + group[1:]
+    print group[0].upper() + group[1:], "--", classifier.__name__
     print "-----------------------"
-    naive_bayes = BernoulliNB(alpha=1.0, fit_prior=True)
+    naive_bayes = classifier(alpha=1.0, fit_prior=True)
     vectorizer = TfidfVectorizer(min_df=2, max_df=.95, ngram_range=(1,2,), stop_words='english')
     text = [yak.message for yak in yaks if known(yak[group])]
     data = vectorizer.fit_transform(text)
@@ -78,8 +77,9 @@ def process(group, predict_unlabled_data=False):
         print "-----------------------------------------"
 
 if __name__ == '__main__':
-    process('racist', predict_unlabled_data=True)
-    process('depressed', predict_unlabled_data=True)
-    process('horny', predict_unlabled_data=True)
-    process('sexist', predict_unlabled_data=True)
-    process('greek', predict_unlabled_data=True)
+    for classifier in [MultinomialNB, BernoulliNB]:
+        process('racist', predict_unlabled_data=True, classifier=classifier)
+        process('depressed', predict_unlabled_data=True, classifier=classifier)
+        process('horny', predict_unlabled_data=True, classifier=classifier)
+        process('sexist', predict_unlabled_data=True, classifier=classifier)
+        process('greek', predict_unlabled_data=True, classifier=classifier)
