@@ -35,9 +35,9 @@ def process(group, predict_unlabled_data=False):
     text = [yak.message for yak in yaks if known(yak[group])]
     data = vectorizer.fit_transform(text)
     target = np.array([int(yak[group]) for yak in yaks if known(yak[group])])
-    print data.shape
-    print np.count_nonzero(target)
-    print cross_val_score(naive_bayes, data, target, scoring='accuracy', verbose=1, cv=5)
+    print "Shape:", data.shape
+    print "Number of non-zero labels in target:", np.count_nonzero(target)
+    print "5 Fold Cross Validation:", cross_val_score(naive_bayes, data, target, scoring='accuracy', verbose=1, cv=5)
 
     naive_bayes.fit(data, target) # train on all data
     terms = vectorizer.get_feature_names()
@@ -56,20 +56,22 @@ def process(group, predict_unlabled_data=False):
         max_predicted_proba = [max(probas) for probas in predicted_proba]
         max_predicted_class = [probas.argmax() for probas in predicted_proba]
 
-        print "-----------------------------------------"
+        print "Lowest Probability Documents"
 
         for index in np.array(max_predicted_proba).argsort()[:10]:
             print predicted_proba[index], max_predicted_class[index], new_ids[index], new_text[index]
 
         print "-----------------------------------------"
 
+        print "Highest Probability Documents"
+
         for index in (-np.array(max_predicted_proba)).argsort()[:10]:
             print predicted_proba[index], max_predicted_class[index], new_ids[index], new_text[index]
 
         print "-----------------------------------------"
 
-process('racist', predict_unlabled_data=True)
+process('racist', predict_unlabled_data=False)
 process('depressed')
-process('lonely')
-process('sexist')
+# process('lonely')
+# process('sexist')
 
