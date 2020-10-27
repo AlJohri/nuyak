@@ -1,5 +1,5 @@
 APScheduler==3.0.2
-cryptography==0.8.1
+cryptography==3.2
 futures==2.2.0
 python-dateutil==2.4.2
 python-firebase==1.2
